@@ -19,6 +19,7 @@ import (
 type Server struct {
 	Echo        *echo.Echo
 	Auth        *auth.Client
+	DBName      string
 	Firebase    *firebase.App
 	Firestore   *firestore.Client
 	MongoClient *mongo.Client

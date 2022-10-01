@@ -11,7 +11,7 @@ func UseUtil() *Utility {
 	return &Utility{}
 }
 
-func (u *Utility) getLimitOffset(page int, noRecord int) (limit int, offset int) {
+func (u *Utility) GetLimitOffset(page int, noRecord int) (limit int, offset int) {
 	if page == 0 {
 		page = 1
 	}

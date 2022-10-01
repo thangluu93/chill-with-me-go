@@ -15,7 +15,15 @@ type Movie struct {
 	collection     *mongo.Collection
 }
 
-func (m *Movie) getListMovies(limit int, offset int, genre string) (movie *models.Movie, err error) {
+func NewMovie(db *mongo.Database, collectionName string) *User {
+	return &User{
+		DB:             db,
+		CollectionName: collectionName,
+		collection:     db.Collection(collectionName),
+	}
+}
+
+func (m *Movie) GetListMovies(limit int, offset int, genre string) (movie []*models.Movie, err error) {
 	ctx := context.Background()
 	filterOptions := options.Find()
 	if limit != 0 {
@@ -24,7 +32,12 @@ func (m *Movie) getListMovies(limit int, offset int, genre string) (movie *model
 	if offset != 0 {
 		filterOptions.SetSkip(int64(offset))
 	}
-	cursor, errCursor := m.collection.Find(ctx, bson.M{})
+	var filter = bson.M{}
+	if genre != "" {
+		filter = bson.M{"genre": genre}
+	}
+
+	cursor, errCursor := m.collection.Find(ctx, filter, filterOptions)
 	if errCursor != nil {
 		log.Fatal(errCursor)
 		return nil, errCursor
