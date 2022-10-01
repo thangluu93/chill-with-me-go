@@ -16,7 +16,7 @@ func NewUser(server *core.Server, route string) (err error, router *User) {
 	}
 
 	router.Router.POST(data.LOGIN_PATH, func(c echo.Context) error {
-		ctx := core.ToContextV2(&c)
+		//ctx := core.ToContextV2(&c)
 		return nil
 	})
 

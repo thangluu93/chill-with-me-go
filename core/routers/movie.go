@@ -5,6 +5,7 @@ import (
 	"main/business"
 	"main/core"
 	"main/data"
+	"net/http"
 )
 
 type Movie struct {
@@ -24,8 +25,12 @@ func NewMovie(server *core.Server, route string) (err error, router *Movie) {
 		page := ctx.QueryParam("page")
 		noRecord := ctx.QueryParam("noRecord")
 		genre := ctx.QueryParam("genre")
-		movieBusiness.MovieList(page, noRecord, genre)
-		return nil
+
+		list, err := movieBusiness.MovieList(page, noRecord, genre)
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, list)
 	})
 
 	return nil, router

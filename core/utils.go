@@ -1,7 +1,9 @@
 package core
 
 import (
+	"errors"
 	"main/data"
+	"strconv"
 )
 
 type Utility struct {
@@ -21,4 +23,20 @@ func (u *Utility) GetLimitOffset(page int, noRecord int) (limit int, offset int)
 	limit = noRecord
 	offset = (page - 1) * noRecord
 	return limit, offset
+}
+
+func (u *Utility) StringToInt(number string) (intNumber int, err error) {
+	var numberInt int
+	if number == "" {
+		return numberInt, errors.New("number is empty")
+	}
+	numberInt, errorParse := strconv.Atoi(number)
+	if errorParse != nil {
+		return numberInt, errorParse
+	}
+	return numberInt, nil
+}
+
+func NewError(message string) error {
+	return errors.New(message)
 }
