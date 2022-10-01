@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/labstack/echo/v4"
 	"main/core"
+	"main/data"
 )
 
 type User struct {
@@ -14,9 +15,9 @@ func NewUser(server *core.Server, route string) (err error, router *User) {
 		Router: server.Echo.Group(route),
 	}
 
-	router.Router.POST("/login", func(c echo.Context) error {
+	router.Router.POST(data.LOGIN_PATH, func(c echo.Context) error {
 		ctx := core.ToContextV2(&c)
-
+		return nil
 	})
 
 	return nil, router
