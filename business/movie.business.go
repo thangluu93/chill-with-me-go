@@ -35,9 +35,34 @@ func (m *Movie) MovieList(page string, noRecord string, genre string) (movies []
 
 	limit, offset := m.Util.GetLimitOffset(pageInt, noRecordInt)
 	movies, err = m.MovieAccess.GetListMovies(limit, offset, genre)
-	
+
 	if err != nil {
 		return nil, err
 	}
 	return movies, nil
+}
+
+func (m *Movie) CreateMovie(movie *models.Movie) (newMovie *models.Movie, err error) {
+	newMovie, err = m.MovieAccess.CreateMovie(movie)
+	if err != nil {
+		return nil, err
+	}
+	return newMovie, nil
+
+}
+
+func (m *Movie) UpdateMovie(movie *models.Movie) (updatedMovie *models.Movie, err error) {
+	updatedMovie, err = m.MovieAccess.UpdateMovie(movie)
+	if err != nil {
+		return nil, err
+	}
+	return updatedMovie, nil
+}
+
+func (m *Movie) DeleteMovie(movie *models.Movie) (success bool, err error) {
+	_, err = m.MovieAccess.UpdateMovie(movie)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

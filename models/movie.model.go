@@ -1,7 +1,7 @@
 package models
 
 type Movie struct {
-	Id          int    `json:"id" bson:"id"`
+	Id          string `json:"id" bson:"_id,omitempty"`
 	Title       string `json:"title" bson:"title"`
 	Description string `json:"description" bson:"description"`
 	Year        int    `json:"year" bson:"year"`

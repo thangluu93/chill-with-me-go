@@ -66,6 +66,9 @@ func NewServer() (svr *Server, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	mongoClient, err := mongo.Connect(ctx, clientOption)
+	if err != nil {
+		return nil, err
+	}
 
 	// init new executor
 	executor := NewExecutor(config)
@@ -73,6 +76,8 @@ func NewServer() (svr *Server, err error) {
 	svr = &Server{
 		Echo:        e,
 		Auth:        auth,
+		Config:      config,
+		DBName:      config.DbName,
 		Firebase:    firebaseApp,
 		MongoClient: mongoClient,
 		Executor:    executor,
@@ -81,4 +86,8 @@ func NewServer() (svr *Server, err error) {
 
 	return svr, nil
 
+}
+
+func (s *Server) Start() (err error) {
+	return s.Echo.Start(s.Config.HostIP)
 }

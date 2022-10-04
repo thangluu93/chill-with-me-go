@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"main/core/routers"
 )
 
@@ -11,14 +10,26 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello, World!")
 	server, err := core.NewServer()
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
-	err, _ = routers.NewUser(server, "/v1/user")
+	err, _ = routers.NewUser(server, "")
 	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	err, _ = routers.NewMovie(server, "")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	err = server.Start()
+	if err != nil {
+		log.Fatal("start error", err)
 		return
 	}
 }
