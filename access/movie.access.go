@@ -34,8 +34,9 @@ func (m *Movie) GetListMovies(limit int, offset int, genre string) (movie []*mod
 		filterOptions.SetSkip(int64(offset))
 	}
 	var filter = bson.M{}
+	filter["isAchieve"] = false
 	if genre != "" {
-		filter = bson.M{"genre": genre}
+		filter["genre"] = genre
 	}
 
 	cursor, errCursor := m.collection.Find(ctx, filter, filterOptions)
