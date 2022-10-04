@@ -14,17 +14,19 @@ import (
 	"time"
 
 	firebase "firebase.google.com/go/v4"
+	cloudStorage "firebase.google.com/go/v4/storage"
 )
 
 type Server struct {
-	Echo        *echo.Echo
-	Auth        *auth.Client
-	DBName      string
-	Firebase    *firebase.App
-	Firestore   *firestore.Client
-	MongoClient *mongo.Client
-	Config      *models.Config
-	Executor    *Executor
+	Echo         *echo.Echo
+	Auth         *auth.Client
+	DBName       string
+	Firebase     *firebase.App
+	Firestore    *firestore.Client
+	CloudStorage *cloudStorage.Client
+	MongoClient  *mongo.Client
+	Config       *models.Config
+	Executor     *Executor
 }
 
 func NewServer() (svr *Server, err error) {
@@ -61,6 +63,8 @@ func NewServer() (svr *Server, err error) {
 
 	firestoreApp, err := firebaseApp.Firestore(context.Background())
 
+	cloudStorageApp, err := firebaseApp.Storage(context.Background())
+
 	clientOption := options.Client().ApplyURI(config.DB)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -70,22 +74,18 @@ func NewServer() (svr *Server, err error) {
 		return nil, err
 	}
 
-	// init new executor
-	executor := NewExecutor(config)
-
 	svr = &Server{
-		Echo:        e,
-		Auth:        auth,
-		Config:      config,
-		DBName:      config.DbName,
-		Firebase:    firebaseApp,
-		MongoClient: mongoClient,
-		Executor:    executor,
-		Firestore:   firestoreApp,
+		Echo:         e,
+		Auth:         auth,
+		Config:       config,
+		DBName:       config.DbName,
+		Firebase:     firebaseApp,
+		CloudStorage: cloudStorageApp,
+		MongoClient:  mongoClient,
+		Firestore:    firestoreApp,
 	}
 
 	return svr, nil
-
 }
 
 func (s *Server) Start() (err error) {

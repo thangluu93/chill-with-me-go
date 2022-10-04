@@ -69,6 +69,20 @@ func (m *Movie) movieDeleteCtrl(c echo.Context) error {
 	return c.JSON(http.StatusOK, success)
 }
 
+func (m *Movie) uploadMovieCtrl(c echo.Context) error {
+	ctx := core.ToContextV2(&c)
+	file, err := ctx.FormFile("file")
+	movieId := ctx.FormValue("movieId")
+	if err != nil {
+		return err
+	}
+	err = m.MovieBusiness.UploadMovie(movieId, file)
+	if err != nil {
+		return c.JSON(http.StatusOK, err)
+	}
+	return c.JSON(http.StatusOK, nil)
+}
+
 func NewMovie(server *core.Server, route string) (err error, router *Movie) {
 	db := server.MongoClient.Database(server.DBName)
 	router = &Movie{
@@ -80,6 +94,7 @@ func NewMovie(server *core.Server, route string) (err error, router *Movie) {
 	router.Router.POST(data.MovieCreatePath, router.movieCreateCtrl)
 	router.Router.PUT(data.MovieUpdatePath, router.movieUpdateCtrl)
 	router.Router.DELETE(data.MovieDeletePath, router.movieDeleteCtrl)
+	router.Router.POST(data.MovieUploadPath, router.uploadMovieCtrl)
 
 	return nil, router
 }
