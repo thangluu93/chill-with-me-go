@@ -18,7 +18,7 @@ func (u *Utility) GetLimitOffset(page int, noRecord int) (limit int, offset int)
 		page = 1
 	}
 	if noRecord == 0 {
-		noRecord = data.DEFAULT_PAGE_SIZE
+		noRecord = data.DefaultPageSize
 	}
 	limit = noRecord
 	offset = (page - 1) * noRecord
@@ -35,8 +35,4 @@ func (u *Utility) StringToInt(number string) (intNumber int, err error) {
 		return numberInt, errorParse
 	}
 	return numberInt, nil
-}
-
-func NewError(message string) error {
-	return errors.New(message)
 }

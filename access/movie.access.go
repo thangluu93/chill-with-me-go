@@ -99,7 +99,6 @@ func (m *Movie) DownloadMovieFromStorage(id string) error {
 	wc.ContentType = "video/mp4"
 	// init file data with []byte
 	//var asd []byte
-	//ioutil.ReadFile(wc)
 	//if err != nil {
 	//	log.Fatal(err)
 	//}

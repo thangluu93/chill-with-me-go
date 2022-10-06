@@ -1,3 +1,3 @@
 package data
 
-const DEFAULT_PAGE_SIZE = 20
+const DefaultPageSize = 20

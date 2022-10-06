@@ -25,7 +25,7 @@ type Movie struct {
 func NewMovie(db *mongo.Database, storage *storage.BucketHandle) *Movie {
 	var movie = access.NewMovie(db, "movies", storage)
 	return &Movie{
-		MovieAccess: (*access.Movie)(movie),
+		MovieAccess: movie,
 		Util:        *core.UseUtil(),
 	}
 }
@@ -39,7 +39,7 @@ func (m *Movie) MovieList(page string, noRecord string, genre string) (movies []
 
 	noRecordInt, errorParse := m.Util.StringToInt(noRecord)
 	if errorParse != nil {
-		noRecordInt = data.DEFAULT_PAGE_SIZE
+		noRecordInt = data.DefaultPageSize
 	}
 
 	limit, offset := m.Util.GetLimitOffset(pageInt, noRecordInt)

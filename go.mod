@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	cloud.google.com/go/firestore v1.6.1
+	cloud.google.com/go/storage v1.21.0
 	firebase.google.com/go/v4 v4.8.0
 	github.com/labstack/echo/v4 v4.9.0
 	go.mongodb.org/mongo-driver v1.10.2
@@ -14,7 +15,6 @@ require (
 	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/compute v1.5.0 // indirect
 	cloud.google.com/go/iam v0.1.1 // indirect
-	cloud.google.com/go/storage v1.21.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
@@ -31,7 +31,6 @@ require (
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
-	github.com/xfrr/goffmpeg v0.0.0-20210624103149-5ca2d3062daf // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect

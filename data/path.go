@@ -1,16 +1,16 @@
 package data
 
-const AUTH_PREFIX = "/auth"
-const LOGIN_PATH = AUTH_PREFIX + "/login"
-const REFRESH_TOKEN_PATH = AUTH_PREFIX + "/refresh-token"
-const LOGOUT_PATH = AUTH_PREFIX + "/logout"
-const REGISTER_PATH = AUTH_PREFIX + "/register"
-const FORGOT_PASSWORD_PATH = AUTH_PREFIX + "/forgot-password"
-const RESET_PASSWORD_PATH = AUTH_PREFIX + "/reset-password"
+const AuthPrefix = "/auth"
+const LoginPath = AuthPrefix + "/login"
+const RefreshTokenPath = AuthPrefix + "/refresh-token"
+const LogoutPath = AuthPrefix + "/logout"
+const RegisterPath = AuthPrefix + "/register"
+const ForgotPasswordPath = AuthPrefix + "/forgot-password"
+const ResetPasswordPath = AuthPrefix + "/reset-password"
 
-const USER_PREFIX = "/user"
-const MY_PROFILE_PATH = USER_PREFIX + "/me"
-const USER_UPDATE_PROFILE_PATH = USER_PREFIX + "/update"
+const UserPrefix = "/user"
+const MyProfilePath = UserPrefix + "/me"
+const UserUpdateProfilePath = UserPrefix + "/update"
 
 const MoviePrefix = "/movie"
 const MovieListPath = MoviePrefix + "/list"
