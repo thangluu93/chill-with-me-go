@@ -157,3 +157,11 @@ func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
 	}
 	return err
 }
+
+func (m *Movie) PlayMovie(id string) error {
+	err := m.MovieAccess.DownloadMovieFromStorage(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

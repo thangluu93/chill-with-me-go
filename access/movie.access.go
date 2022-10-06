@@ -92,3 +92,16 @@ func (m *Movie) UploadMovieToStorage(id string, fileData []byte) error {
 	return nil
 
 }
+
+func (m *Movie) DownloadMovieFromStorage(id string) error {
+	ctx := context.Background()
+	wc := m.Storage.Object(id).NewWriter(ctx)
+	wc.ContentType = "video/mp4"
+	// init file data with []byte
+	//var asd []byte
+	//ioutil.ReadFile(wc)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	return nil
+}
