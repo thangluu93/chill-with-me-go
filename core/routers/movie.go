@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"main/business"
 	"main/core"
@@ -85,9 +86,14 @@ func (m *Movie) uploadMovieCtrl(c echo.Context) error {
 
 func NewMovie(server *core.Server, route string) (err error, router *Movie) {
 	db := server.MongoClient.Database(server.DBName)
+	bucket, err := server.CloudStorage.DefaultBucket()
+	if err != nil {
+		_ = fmt.Errorf("error when get bucket: %v", err)
+		return err, nil
+	}
 	router = &Movie{
 		Router:        server.Echo.Group(route),
-		MovieBusiness: business.NewMovie(db),
+		MovieBusiness: business.NewMovie(db, bucket),
 	}
 
 	router.Router.GET(data.MovieListPath, router.movieListCtrl)

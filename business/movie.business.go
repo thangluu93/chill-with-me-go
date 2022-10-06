@@ -2,9 +2,11 @@ package business
 
 import (
 	"bytes"
+	"cloud.google.com/go/storage"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"io"
+	"io/ioutil"
 	"main/access"
 	"main/core"
 	"main/data"
@@ -20,8 +22,8 @@ type Movie struct {
 	Util        core.Utility
 }
 
-func NewMovie(db *mongo.Database) *Movie {
-	var movie = access.NewMovie(db, "movies")
+func NewMovie(db *mongo.Database, storage *storage.BucketHandle) *Movie {
+	var movie = access.NewMovie(db, "movies", storage)
 	return &Movie{
 		MovieAccess: (*access.Movie)(movie),
 		Util:        *core.UseUtil(),
@@ -74,7 +76,7 @@ func (m *Movie) DeleteMovie(movie *models.Movie) (success bool, err error) {
 	return true, nil
 }
 
-func (m *Movie) SplitMovie(folderPath string, file string) (movie *models.Movie, err error) {
+func (m *Movie) SplitMovie(folderPath string, file string) (err error) {
 	commandArray := []string{"-i", file, "-c:a", "libmp3lame", "-b:a", "128k", "-map", "0:0", "-f", "segment", "-segment_time", "10", "-segment_list", folderPath + "/" + folderPath + ".m3u8", "-segment_format", "mpegts", folderPath + "/output%03d.ts"}
 	cmd := exec.Command("ffmpeg", commandArray...)
 	var out bytes.Buffer
@@ -82,10 +84,10 @@ func (m *Movie) SplitMovie(folderPath string, file string) (movie *models.Movie,
 	err = cmd.Run()
 	if err != nil {
 		fmt.Println("Error: ", err)
-		return nil, err
+		return err
 	}
 	fmt.Printf("command output: %q\n", out.String())
-	return nil, nil
+	return nil
 }
 
 func (m *Movie) createDirectory(movieId string) (d string, err error) {
@@ -95,6 +97,31 @@ func (m *Movie) createDirectory(movieId string) (d string, err error) {
 		return "", err
 	}
 	return movieId, nil
+}
+
+func (m *Movie) uploadAllFileInFolder(directory string) error {
+	err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			fmt.Println("Uploading file: ", info.IsDir(), info.Name())
+			// read file as byte
+			file, err := ioutil.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			err = m.MovieAccess.UploadMovieToStorage(info.Name(), file)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
@@ -124,6 +151,9 @@ func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
 	// get file directory when create file
 	fileDir := dst.Name()
 
-	_, err = m.SplitMovie(movieDir, fileDir)
+	err = m.SplitMovie(movieDir, fileDir)
+	if err != nil {
+		return err
+	}
 	return err
 }

@@ -1,6 +1,7 @@
 package access
 
 import (
+	"cloud.google.com/go/storage"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,13 +15,15 @@ type Movie struct {
 	DB             *mongo.Database
 	CollectionName string
 	collection     *mongo.Collection
+	Storage        *storage.BucketHandle
 }
 
-func NewMovie(db *mongo.Database, collectionName string) *User {
-	return &User{
+func NewMovie(db *mongo.Database, collectionName string, bucket *storage.BucketHandle) *Movie {
+	return &Movie{
 		DB:             db,
 		CollectionName: collectionName,
 		collection:     db.Collection(collectionName),
+		Storage:        bucket,
 	}
 }
 
@@ -73,4 +76,19 @@ func (m *Movie) UpdateMovie(movie *models.Movie) (*models.Movie, error) {
 		return nil, err
 	}
 	return movie, nil
+}
+
+func (m *Movie) UploadMovieToStorage(id string, fileData []byte) error {
+	// upload file to storage
+	ctx := context.Background()
+	wc := m.Storage.Object(id).NewWriter(ctx)
+	wc.ContentType = "video/mp4"
+	if _, err := wc.Write(fileData); err != nil {
+		return err
+	}
+	if err := wc.Close(); err != nil {
+		return err
+	}
+	return nil
+
 }

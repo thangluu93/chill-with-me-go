@@ -44,7 +44,9 @@ func NewServer() (svr *Server, err error) {
 		return nil, err
 	}
 
-	firebaseConfig := &firebase.Config{}
+	firebaseConfig := &firebase.Config{
+		StorageBucket: config.BucketName,
+	}
 	err = json.Unmarshal(file, firebaseConfig)
 	if err != nil {
 		return nil, err

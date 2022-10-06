@@ -7,4 +7,5 @@ type Config struct {
 	DbName         string   `json:"dbName"`
 	DevMode        bool     `json:"devMode"`
 	Executors      []string `json:"executors"`
+	BucketName     string   `json:"bucketName"`
 }
