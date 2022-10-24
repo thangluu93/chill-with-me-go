@@ -96,7 +96,7 @@ func (m *Movie) playMovieCtrl(c echo.Context) error {
 
 func NewMovie(server *core.Server, route string) (err error, router *Movie) {
 	db := server.MongoClient.Database(server.DBName)
-	bucket, err := server.CloudStorage.DefaultBucket()
+	bucket, err := server.CloudStorage.Bucket(server.Config.BucketName)
 	if err != nil {
 		_ = fmt.Errorf("error when get bucket: %v", err)
 		return err, nil

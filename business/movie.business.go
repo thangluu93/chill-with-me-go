@@ -155,6 +155,11 @@ func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
 	if err != nil {
 		return err
 	}
+
+	err = m.uploadAllFileInFolder(movieDir)
+	if err != nil {
+		return err
+	}
 	return err
 }
 
