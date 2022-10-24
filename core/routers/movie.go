@@ -7,6 +7,7 @@ import (
 	"main/core"
 	"main/data"
 	"main/models"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -70,6 +71,13 @@ func (m *Movie) movieDeleteCtrl(c echo.Context) error {
 	return c.JSON(http.StatusOK, success)
 }
 
+func (m *Movie) uploadMovieRoutine(movieId string, file *multipart.FileHeader) {
+	err := m.MovieBusiness.UploadMovie(movieId, file)
+	if err != nil {
+		_ = fmt.Errorf("error when upload movie: %v", err)
+	}
+}
+
 func (m *Movie) uploadMovieCtrl(c echo.Context) error {
 	ctx := core.ToContextV2(&c)
 	file, err := ctx.FormFile("file")
@@ -77,7 +85,7 @@ func (m *Movie) uploadMovieCtrl(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	err = m.MovieBusiness.UploadMovie(movieId, file)
+	go m.uploadMovieRoutine(movieId, file)
 	if err != nil {
 		return c.JSON(http.StatusOK, err)
 	}
@@ -111,7 +119,7 @@ func NewMovie(server *core.Server, route string) (err error, router *Movie) {
 	router.Router.PUT(data.MovieUpdatePath, router.movieUpdateCtrl)
 	router.Router.DELETE(data.MovieDeletePath, router.movieDeleteCtrl)
 	router.Router.POST(data.MovieUploadPath, router.uploadMovieCtrl)
-	router.Router.POST(data.PlayMoviesPath, router.uploadMovieCtrl)
+	router.Router.POST(data.PlayMoviesPath, router.playMovieCtrl)
 
 	return nil, router
 }
