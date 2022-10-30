@@ -72,10 +72,12 @@ func (m *Movie) movieDeleteCtrl(c echo.Context) error {
 }
 
 func (m *Movie) uploadMovieRoutine(movieId string, file *multipart.FileHeader) {
+	fmt.Println("uploadMovieRoutine")
 	err := m.MovieBusiness.UploadMovie(movieId, file)
 	if err != nil {
 		_ = fmt.Errorf("error when upload movie: %v", err)
 	}
+	fmt.Println("uploadMovieRoutine done")
 }
 
 func (m *Movie) uploadMovieCtrl(c echo.Context) error {
@@ -83,11 +85,13 @@ func (m *Movie) uploadMovieCtrl(c echo.Context) error {
 	file, err := ctx.FormFile("file")
 	movieId := ctx.FormValue("movieId")
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
+
 	go m.uploadMovieRoutine(movieId, file)
 	if err != nil {
-		return c.JSON(http.StatusOK, err)
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, nil)
 }

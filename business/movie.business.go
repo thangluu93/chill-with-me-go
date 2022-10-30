@@ -125,12 +125,14 @@ func (m *Movie) uploadAllFileInFolder(directory string) error {
 }
 
 func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
+	fmt.Println("Uploading movie: ", movie.Filename)
 	movieDir, err := m.createDirectory(movieId)
 	if err != nil {
 		return err
 	}
 	src, err := movie.Open()
 	if err != nil {
+		fmt.Println("Error: ", err)
 		return err
 	}
 	// write file and close then get directory
@@ -145,6 +147,7 @@ func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
 		}
 	}(dst)
 	if _, err = io.Copy(dst, src); err != nil {
+		fmt.Println("Error: ", err)
 		return err
 	}
 
@@ -153,13 +156,17 @@ func (m *Movie) UploadMovie(movieId string, movie *multipart.FileHeader) error {
 
 	err = m.SplitMovie(movieDir, fileDir)
 	if err != nil {
+		fmt.Println("Error: ", err)
 		return err
 	}
+	fmt.Println("Split file success")
 
 	err = m.uploadAllFileInFolder(movieDir)
 	if err != nil {
+		fmt.Println("Error: ", err)
 		return err
 	}
+	fmt.Println("Upload success")
 	return err
 }
 
